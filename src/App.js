@@ -73,17 +73,24 @@ class App extends Component {
   render() {
     return (
       <Container className="App">
+      {/* <div>
+        kjhg
+      </div> */}
         <Row>
           <Col>
-            <h1 style={{margin: "20px 0"}}>CRUD Database</h1>
+            <h1 style={{margin: "20px 0"}}>CRUD Database + {this.state.items.length}</h1>
           </Col>
         </Row>
+        {this.state.items && 
         <Row>
           <Col>
-            <DataTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
+           <DataTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
           </Col>
-        </Row>
-        <Row>
+        </Row>        
+        }
+        
+        {/* {this.state.items &&
+          <Row>
           <Col>
             <CSVLink
               filename={"db.csv"}
@@ -95,7 +102,9 @@ class App extends Component {
             </CSVLink>
             <ModalForm buttonLabel="Add Item" addItemToState={this.addItemToState}/>
           </Col>
-        </Row>
+        </Row> 
+        }*/}
+        
       </Container>
     )
   }
