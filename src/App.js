@@ -1,95 +1,64 @@
-//import logo from './logo.svg';
-//import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-import React, { Component } from 'react'
+import { useState, useEffect } from 'react'
 import { Container, Row, Col } from 'reactstrap'
 import ModalForm from './Components/Modals/Modal'
 import DataTable from './Components/Tables/DataTable'
 import { CSVLink } from "react-csv"
 
-class App extends Component {
-  state = {
-    items: []
-  }
+export default function App(){
+  const [items, setItems] = useState([])
 
-  getItems(){
-    fetch('http://localhost:3000/crud')
+  useEffect(() => {
+    fetch('http://192.168.88.18:3000/crud')
+    // fetch('http://193.186.4.48:3000/crud')
       .then(response => response.json())
-      .then(items => this.setState({items}))
+      .then(data => setItems(data))
       .catch(err => console.log(err))
-  }
+  }, [])
 
-  addItemToState = (item) => {
-    this.setState(prevState => ({
+  console.log(items)
+
+  const addItemToState = (item) => {
+    setItems(prevState => ({
       items: [...prevState.items, item]
     }))
   }
 
-  updateState = (item) => {
-    const itemIndex = this.state.items.findIndex(data => data.id === item.id)
+  const updateState = (item) => {
+    const itemIndex = items.findIndex(data => data.id === item.id)
     const newArray = [
     // destructure all items from beginning to the indexed item
-      ...this.state.items.slice(0, itemIndex),
+      ...items.slice(0, itemIndex),
     // add the updated item to the array
       item,
     // add the rest of the items to the array from the index after the replaced item
-      ...this.state.items.slice(itemIndex + 1)
+      ...items.slice(itemIndex + 1)
     ]
-    this.setState({ items: newArray })
+    setItems({ items: newArray })
   }
 
-  deleteItemFromState = (id) => {
-    const updatedItems = this.state.items.filter(item => item.id !== id)
-    this.setState({ items: updatedItems })
+  const deleteItemFromState = (id) => {
+    const updatedItems = items.filter(item => item.id !== id)
+    setItems({ items: updatedItems })
   }
 
-  componentDidMount(){
-    this.getItems()
-  }
 
-  render() {
+  
     return (
       <Container className="App">
-      {/* <div>
-        kjhg
-      </div> */}
+         <Row>
+          <Col> 
+            <h1 style={{margin: "20px 0"}}>CRUD Database</h1>
+          </Col> 
+         </Row>
+        {items && 
         <Row>
           <Col>
-            <h1 style={{margin: "20px 0"}}>CRUD Database + {this.state.items.length}</h1>
+           <DataTable items={items} updateState={updateState} deleteItemFromState={deleteItemFromState} />
           </Col>
-        </Row>
-        {this.state.items && 
-        <Row>
-          <Col>
-           <DataTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
-          </Col>
-        </Row>        
+         </Row>        
         }
         
-        {/* {this.state.items &&
+        {items &&
           <Row>
           <Col>
             <CSVLink
@@ -97,17 +66,16 @@ class App extends Component {
               color="primary"
               style={{float: "left", marginRight: "10px"}}
               className="btn btn-primary"
-              data={this.state.items}>
+              data={items}>
               Download CSV
             </CSVLink>
-            <ModalForm buttonLabel="Add Item" addItemToState={this.addItemToState}/>
+            <ModalForm buttonLabel="Add Item" addItemToState={addItemToState}/>
           </Col>
         </Row> 
-        }*/}
+        }
         
       </Container>
     )
   }
-}
 
-export default App
+
