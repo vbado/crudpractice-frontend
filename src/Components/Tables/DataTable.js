@@ -3,19 +3,19 @@ import { Table, Button } from 'reactstrap';
 import ModalForm from '../Modals/Modal'
 
 
-export default function DataTable({ items, updateState, deleteItemFromState }){
-
+export default function DataTable({ items, updateState, deleteItemFromState }) {
+  
  const deleteItem = id => {
     let confirmDelete = window.confirm('Delete item forever?')
     if(confirmDelete){
-      fetch('http://localhost:3000/crud', {
+      fetch('http://192.168.88.18:3000/crud', {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         id
-      })
+        })
     })
       .then(response => response.json())
       .then(item => {

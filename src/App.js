@@ -8,41 +8,39 @@ export default function App(){
   const [items, setItems] = useState([])
 
   useEffect(() => {
-    fetch('http://192.168.88.18:3000/crud')
-    // fetch('http://193.186.4.48:3000/crud')
-      .then(response => response.json())
-      .then(data => setItems(data))
-      .catch(err => console.log(err))
+    const fetchData = () => {
+      fetch('http://192.168.88.18:3000/crud')
+        .then(response => response.json())
+        .then(data => setItems(data))
+        .catch(err => console.log(err))
+    }
+  
+    fetchData() 
+  
+    const interval = setInterval(fetchData, 5000) 
+  
+    return () => clearInterval(interval)
   }, [])
 
-  console.log(items)
-
   const addItemToState = (item) => {
-    setItems(prevState => ({
-      items: [...prevState.items, item]
-    }))
+    setItems(prevItems => [...prevItems, item])
   }
-
-  const updateState = (item) => {
-    const itemIndex = items.findIndex(data => data.id === item.id)
-    const newArray = [
-    // destructure all items from beginning to the indexed item
-      ...items.slice(0, itemIndex),
-    // add the updated item to the array
-      item,
-    // add the rest of the items to the array from the index after the replaced item
-      ...items.slice(itemIndex + 1)
-    ]
-    setItems({ items: newArray })
-  }
-
-  const deleteItemFromState = (id) => {
-    const updatedItems = items.filter(item => item.id !== id)
-    setItems({ items: updatedItems })
-  }
-
-
   
+const updateState = (item) => {
+  const itemIndex = items.findIndex(data => data.id === item.id)
+  const newArray = [
+    ...items.slice(0, itemIndex),
+    item,
+    ...items.slice(itemIndex + 1)
+  ]
+  setItems(newArray)
+}
+
+const deleteItemFromState = (id) => {
+  const updatedItems = items.filter(item => item.id !== id)
+  setItems(updatedItems)
+}
+
     return (
       <Container className="App">
          <Row>
